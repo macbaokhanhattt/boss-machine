@@ -48,13 +48,23 @@ apiRouter.delete('/minions/:minionId',(req, res, next)=>{
 });
 
 ///////////////////////IDEAS API///////////////////////////////////////////
+
+apiRouter.param('ideaId',(req, res, next, id)=>{
+    const idea = getFromDatabaseById('ideas',id);
+    if (idea){
+        req.idea = idea;
+        next();
+    }else{
+        res.status(404).send();
+    }
+})
 apiRouter.get('/ideas',(req, res ,next)=>{
         res.send(getAllFromDatabase('ideas'));
     }
 );
 
 apiRouter.get('/ideas/:ideaId',(req, res , next)=>{
-    res.send('dr');
+    res.send(req.idea);
 });
 
 apiRouter.post('/ideas',(req, res , next)=>{
