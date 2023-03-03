@@ -2,6 +2,7 @@ const express = require('express');
 const apiRouter = express.Router();
 const {getAllFromDatabase, getFromDatabaseById, isValidMinion, addToDatabase, updateInstanceInDatabase,
     deleteFromDatabasebyId,} = require("./db");
+const meetings = require("../browser/store/meetings");
 
 
 ////////////////////////MINION API///////////////////
@@ -31,8 +32,22 @@ apiRouter.post('/minions',(req, res , next)=>{
 
 apiRouter.put('/minions/:minionId',(req, res ,next)=>{
     console.log(req.minion);
-    req.minion.name = req.body.name;
-    console.log(req.minion);
+    const change = Object.keys(req.query);
+    console.log(change);
+    for (let i =0; i< change.length;i++){
+       if(change[i] === 'name'){
+           req.minion.name = req.query.name;
+       }
+       if(change[i]==='title'){
+           req.minion.title = req.query.title;
+       }
+       if(change[i]==='weaknesses'){
+           req.minion.weaknesses = req.query.weaknesses;
+       }
+       if(change[i]==='salary'){
+           req.minion.salary = req.query.salary;
+       }
+    }
     const updatedMinion = updateInstanceInDatabase('minions',req.minion);
     res.send(updatedMinion);
 });
@@ -68,15 +83,39 @@ apiRouter.get('/ideas/:ideaId',(req, res , next)=>{
 });
 
 apiRouter.post('/ideas',(req, res , next)=>{
-    res.send('sss');
+    const newIdea = addToDatabase('ideas',req.body);
+    res.status(201).send(newIdea);
 });
 
 apiRouter.put('/ideas/:ideaId',(req, res ,next)=>{
-    res.send('test');
+    const change = Object.keys(req.query);
+    for(let i =0; i< change.length; i++ ){
+        if(change[i] === 'name'){
+            req.idea.name = req.query.name;
+        }
+        if(change[i]==='description'){
+            req.idea.description = req.query.description;
+        }
+        if(change[i]==='weeklyRevenue'){
+            req.idea.weeklyRevenue = req.query.weeklyRevenue;
+        }
+        if(change[i]==='numWeeks'){
+            req.idea.numWeeks = req.query.numWeeks;
+        }
+    }
+    const updatedIdea = updateInstanceInDatabase('ideas',req.idea)
+    res.send(updatedIdea);
 });
 
 apiRouter.delete('/ideas/:ideaId',(req, res, next)=>{
-    res.send('test');
+    const deletedIdea = deleteFromDatabasebyId('ideas',req.params.ideaId);
+    if(deletedIdea){
+        res.send("Delete Succes");
+    }else{
+        res.status(404).send();
+    }
+    res.send();
+
 });
 
 
@@ -88,11 +127,12 @@ apiRouter.get('/meetings', (req, res , next)=>{
 });
 
 apiRouter.post('/meeting',(req, res, next)=>{
-   res.send('yes');
+   const newMeetings = addToDatabase('meeting',req.body);
+   res.status(201).send(newMeetings);
 });
 
 apiRouter.delete('/meetings',(req, res , next)=>{
-    res.send('sss');
+    res.send('Delete All!!!');
 });
 
 
