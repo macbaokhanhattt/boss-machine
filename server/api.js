@@ -1,9 +1,16 @@
 const express = require('express');
 const apiRouter = express.Router();
 const {getAllFromDatabase, getFromDatabaseById, isValidMinion, addToDatabase, updateInstanceInDatabase,
-    deleteFromDatabasebyId, deleteAllFromDatabase,} = require("./db");
+    deleteFromDatabasebyId, deleteAllFromDatabase, createMeeting,} = require("./db");
 
-
+////////checkMilliondollaridea///////////////////////////
+const checkMillionDollarIdea = (req, res, next)=>{
+    if(Number(req.body.numWeeks ) * Number(req.body.weeklyRevenue)<1000000){
+        res.status(400).send('Bad Idea');
+        next();
+    }else
+        res.send(req.body);
+}
 
 ////////////////////////MINION API///////////////////
 
@@ -82,7 +89,7 @@ apiRouter.get('/ideas/:ideaId',(req, res , next)=>{
     res.send(req.idea);
 });
 
-apiRouter.post('/ideas',(req, res , next)=>{
+apiRouter.post('/ideas',checkMillionDollarIdea,(req, res , next)=>{
     const newIdea = addToDatabase('ideas',req.body);
     res.status(201).send(newIdea);
 });
@@ -127,7 +134,7 @@ apiRouter.get('/meetings', (req, res , next)=>{
 });
 
 apiRouter.post('/meeting',(req, res, next)=>{
-   const newMeetings = addToDatabase('meeting',req.body);
+   const newMeetings = addToDatabase('meeting',createMeeting());
    res.status(201).send(newMeetings);
 });
 
