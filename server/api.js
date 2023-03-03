@@ -1,8 +1,8 @@
 const express = require('express');
 const apiRouter = express.Router();
 const {getAllFromDatabase, getFromDatabaseById, isValidMinion, addToDatabase, updateInstanceInDatabase,
-    deleteFromDatabasebyId,} = require("./db");
-const meetings = require("../browser/store/meetings");
+    deleteFromDatabasebyId, deleteAllFromDatabase,} = require("./db");
+
 
 
 ////////////////////////MINION API///////////////////
@@ -132,7 +132,8 @@ apiRouter.post('/meeting',(req, res, next)=>{
 });
 
 apiRouter.delete('/meetings',(req, res , next)=>{
-    res.send('Delete All!!!');
+    if(deleteAllFromDatabase('meetings')){
+    res.send('Delete All!!!');}
 });
 
 
