@@ -1,6 +1,7 @@
 const express = require('express');
 const apiRouter = express.Router();
-const {getAllFromDatabase, getFromDatabaseById, isValidMinion,} = require("./db");
+const {getAllFromDatabase, getFromDatabaseById, isValidMinion, addToDatabase, updateInstanceInDatabase,
+    deleteFromDatabasebyId,} = require("./db");
 
 
 ////////////////////////MINION API///////////////////
@@ -23,15 +24,27 @@ apiRouter.get('/minions/:minionId',(req, res , next)=>{
 });
 
 apiRouter.post('/minions',(req, res , next)=>{
-   res.send('sss');
+    const newMinion = addToDatabase('minions',req.body);
+    console.log(req.body);
+    res.status(201).send(newMinion);
 });
 
 apiRouter.put('/minions/:minionId',(req, res ,next)=>{
-    res.send('test');
+    console.log(req.minion);
+    req.minion.name = req.body.name;
+    console.log(req.minion);
+    const updatedMinion = updateInstanceInDatabase('minions',req.minion);
+    res.send(updatedMinion);
 });
 
 apiRouter.delete('/minions/:minionId',(req, res, next)=>{
-    res.send('test');
+    const deletedMinion = deleteFromDatabasebyId('minions',req.params.minionId);
+    if(deletedMinion){
+        res.send("Delete Succes");
+    }else{
+        res.status(404).send();
+    }
+    res.send();
 });
 
 ///////////////////////IDEAS API///////////////////////////////////////////
